@@ -542,7 +542,7 @@ body {
 }
 
 .contact-item h4 i {
-    font-size: 1.3rem;
+    font-size: 1.6rem;
     color: var(--secondary-blue);
     transition: var(--transition-smooth);
 }
@@ -556,7 +556,7 @@ body {
     color: var(--dark-text);
     text-decoration: none;
     transition: var(--transition-smooth);
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 500;
     display: inline-block;
     padding: 0.5rem 0;
