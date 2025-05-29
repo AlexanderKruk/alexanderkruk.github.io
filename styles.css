@@ -199,9 +199,9 @@ body {
 }
 
 .hero-subtitle {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     color: var(--white);
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
     opacity: 0;
     animation: fadeIn 1s ease-out 0.9s forwards;
     letter-spacing: 2px;
