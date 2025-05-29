@@ -468,6 +468,8 @@ body {
 .contact-info {
     display: grid;
     gap: 1rem;
+    align-self: center;
+    justify-self: center;
 }
 
 .contact-item {
@@ -485,6 +487,7 @@ body {
     font-size: 1.2rem;
     min-width: 40px;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .contact-item h4 i {
@@ -717,6 +720,12 @@ body {
     .about-details {
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     }
+    
+    .contact-info {
+        gap: 1rem;
+        align-self: center;
+        justify-self: center;
+    }
 }
 
 /* Desktop Styles */
@@ -730,7 +739,7 @@ body {
     }
     
     .featured-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: 1fr;
     }
     
     .gallery-item {
@@ -738,7 +747,9 @@ body {
     }
     
     .contact-info {
-        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        align-self: center;
+        justify-self: center;
     }
 }
 
