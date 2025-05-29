@@ -456,7 +456,6 @@ body {
 .about-content {
     display: grid;
     gap: 3rem;
-    margin-top: 3rem;
     align-items: center;
 }
 
