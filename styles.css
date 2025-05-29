@@ -1,3 +1,12 @@
+/* Custom Font Loading */
+@font-face {
+    font-family: 'TheNautiGal';
+    src: url('TheNautiGalROB.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 /* Reset and Base Styles */
 * {
     margin: 0;
@@ -164,7 +173,7 @@ body {
 
 .hero-title {
     font-family: var(--font-heading);
-    font-size: clamp(3rem, 8vw, 6rem);
+    font-size: clamp(4rem, 8vw, 8rem);
     font-weight: 400;
     color: var(--white);
     margin-bottom: 1rem;
@@ -174,14 +183,17 @@ body {
 
 .hero-name {
     display: block;
-    font-style: italic;
+    font-family: 'TheNautiGal', cursive;
+    font-style: normal;
+    font-weight: normal;
     opacity: 0;
     animation: slideInLeft 1s ease-out 0.3s forwards;
 }
 
 .hero-surname {
     display: block;
-    font-weight: 600;
+    font-family: 'TheNautiGal', cursive;
+    font-weight: normal;
     opacity: 0;
     animation: slideInRight 1s ease-out 0.6s forwards;
 }
@@ -948,6 +960,12 @@ body {
 
 /* Mobile Modal Styles */
 @media (max-width: 767px) {
+    /* Elena Kruk - twice bigger on mobile */
+
+    .hero-title {
+        font-size: clamp(8rem, 16vw, 16rem);
+    }
+    
     /* Remove horizontal padding for gallery on mobile */
     .gallery {
         padding: 2rem 0;
