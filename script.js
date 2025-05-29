@@ -147,9 +147,11 @@ function initializeGallery() {
     // Add click handlers to all gallery items (including clones)
     function addGalleryClickHandlers() {
         document.querySelectorAll('.gallery-item').forEach((item, globalIndex) => {
+            // Remove existing click handlers from images
             const image = item.querySelector('img');
             if (image) {
-                image.addEventListener('click', function(e) {
+                // Add click handler to the entire gallery item
+                item.addEventListener('click', function(e) {
                     // Check if the click came from a gallery button
                     if (e.target.closest('.gallery-btn') || e.target.closest('.gallery-controls')) {
                         return;
@@ -157,7 +159,7 @@ function initializeGallery() {
                     
                     // Calculate the original index
                     const originalIndex = globalIndex % originalItems.length;
-                    openImageModal(this.src, this.alt, 'gallery', originalIndex);
+                    openImageModal(image.src, image.alt, 'gallery', originalIndex);
                 });
             }
         });
@@ -404,14 +406,6 @@ function showNotification(message, type = 'info') {
     }, 5000);
 }
 
-// Featured work image overlay interactions
-document.querySelectorAll('.view-details').forEach(button => {
-    button.addEventListener('click', function() {
-        const workTitle = this.closest('.featured-item').querySelector('.work-title').textContent;
-        showNotification(`Opening details for "${workTitle}"`, 'info');
-    });
-});
-
 // Lazy loading for images
 const imageObserver = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
@@ -656,13 +650,15 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Add click handlers to featured works images
+// Add click handlers to featured works - make entire cards clickable
 document.querySelectorAll('.featured-item').forEach((item, index) => {
     const image = item.querySelector('.featured-image img');
     
     if (image) {
-        image.addEventListener('click', function() {
-            openImageModal(this.src, this.alt, 'featured', index);
+        // Add click handler to the entire featured item
+        item.addEventListener('click', function(e) {
+            // Don't prevent clicks on view-details buttons or image-overlay - let them also open the modal
+            openImageModal(image.src, image.alt, 'featured', index);
         });
     }
 });
