@@ -30,39 +30,209 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Gallery horizontal scroll controls
-const galleryScroll = document.getElementById('gallery-scroll');
-const galleryPrev = document.getElementById('gallery-prev');
-const galleryNext = document.getElementById('gallery-next');
+// Gallery horizontal scroll controls with infinite scrolling
+function initializeGallery() {
+    const galleryScroll = document.getElementById('gallery-scroll');
+    const galleryPrev = document.getElementById('gallery-prev');
+    const galleryNext = document.getElementById('gallery-next');
 
-if (galleryPrev && galleryNext && galleryScroll) {
-    const scrollAmount = 320; // Width of gallery item + gap
-
-    galleryPrev.addEventListener('click', () => {
-        galleryScroll.scrollBy({
-            left: -scrollAmount,
-            behavior: 'smooth'
-        });
-    });
-
-    galleryNext.addEventListener('click', () => {
-        galleryScroll.scrollBy({
-            left: scrollAmount,
-            behavior: 'smooth'
-        });
-    });
-
-    // Update button states based on scroll position
-    function updateGalleryButtons() {
-        const scrollLeft = galleryScroll.scrollLeft;
-        const maxScroll = galleryScroll.scrollWidth - galleryScroll.clientWidth;
-
-        galleryPrev.style.opacity = scrollLeft <= 0 ? '0.5' : '1';
-        galleryNext.style.opacity = scrollLeft >= maxScroll ? '0.5' : '1';
+    if (!galleryPrev || !galleryNext || !galleryScroll) {
+        console.error('Gallery elements not found');
+        return;
     }
 
-    galleryScroll.addEventListener('scroll', updateGalleryButtons);
-    updateGalleryButtons(); // Initial state
+    const originalItems = Array.from(galleryScroll.querySelectorAll('.gallery-item'));
+    let isScrolling = false;
+    let isInitializing = false;
+    let initialized = false;
+    
+    // Clone items for infinite effect - create multiple copies
+    function createInfiniteScroll() {
+        if (originalItems.length === 0) {
+            return;
+        }
+        
+        isInitializing = true;
+        
+        // Clear existing content
+        galleryScroll.innerHTML = '';
+        
+        // Create multiple copies of items for smooth infinite scrolling
+        const copies = 3; // Number of copies on each side
+        for (let i = 0; i < copies * 2 + 1; i++) {
+            originalItems.forEach(item => {
+                const clone = item.cloneNode(true);
+                galleryScroll.appendChild(clone);
+            });
+        }
+        
+        // Wait for layout to be ready, then set initial position
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                const itemWidth = getItemWidth();
+                const totalWidth = itemWidth * originalItems.length;
+                
+                // Set scroll position without smooth behavior to avoid animation
+                galleryScroll.style.scrollBehavior = 'auto';
+                galleryScroll.scrollLeft = totalWidth * copies;
+                
+                // Re-enable smooth scrolling after positioning
+                setTimeout(() => {
+                    galleryScroll.style.scrollBehavior = 'smooth';
+                    isInitializing = false;
+                    initialized = true;
+                    
+                    // Add gallery image click handlers after initialization
+                    addGalleryClickHandlers();
+                }, 50);
+            }, 200);
+        });
+    }
+    
+    function getItemWidth() {
+        const items = galleryScroll.querySelectorAll('.gallery-item');
+        if (items.length > 0) {
+            const itemStyle = window.getComputedStyle(items[0]);
+            const itemWidth = parseFloat(itemStyle.width);
+            const gap = parseFloat(window.getComputedStyle(galleryScroll).gap) || 24;
+            return itemWidth + gap;
+        }
+        return 320; // Fallback
+    }
+    
+    function checkAndResetPosition() {
+        if (isScrolling || !initialized || isInitializing) return;
+        
+        const itemWidth = getItemWidth();
+        const totalWidth = itemWidth * originalItems.length;
+        const scrollLeft = galleryScroll.scrollLeft;
+        const maxScroll = galleryScroll.scrollWidth - galleryScroll.clientWidth;
+        
+        // Reset position when approaching boundaries
+        if (scrollLeft <= totalWidth * 0.5) {
+            // Near beginning - jump to equivalent position further right
+            isScrolling = true;
+            const currentBehavior = galleryScroll.style.scrollBehavior;
+            galleryScroll.style.scrollBehavior = 'auto';
+            galleryScroll.scrollLeft = scrollLeft + totalWidth * 2;
+            galleryScroll.style.scrollBehavior = currentBehavior;
+            setTimeout(() => { isScrolling = false; }, 50);
+        } else if (scrollLeft >= maxScroll - totalWidth * 0.5) {
+            // Near end - jump to equivalent position further left
+            isScrolling = true;
+            const currentBehavior = galleryScroll.style.scrollBehavior;
+            galleryScroll.style.scrollBehavior = 'auto';
+            galleryScroll.scrollLeft = scrollLeft - totalWidth * 2;
+            galleryScroll.style.scrollBehavior = currentBehavior;
+            setTimeout(() => { isScrolling = false; }, 50);
+        }
+    }
+    
+    function smoothScrollBy(direction) {
+        if (!initialized || isInitializing) return;
+        
+        const itemWidth = getItemWidth();
+        const scrollAmount = itemWidth;
+        
+        isScrolling = true;
+        galleryScroll.scrollBy({
+            left: direction * scrollAmount,
+            behavior: 'smooth'
+        });
+        
+        // Reset scrolling flag after animation
+        setTimeout(() => { isScrolling = false; }, 500);
+    }
+    
+    // Add click handlers to all gallery items (including clones)
+    function addGalleryClickHandlers() {
+        document.querySelectorAll('.gallery-item').forEach((item, globalIndex) => {
+            const image = item.querySelector('img');
+            if (image) {
+                image.addEventListener('click', function(e) {
+                    // Check if the click came from a gallery button
+                    if (e.target.closest('.gallery-btn') || e.target.closest('.gallery-controls')) {
+                        return;
+                    }
+                    
+                    // Calculate the original index
+                    const originalIndex = globalIndex % originalItems.length;
+                    openImageModal(this.src, this.alt, 'gallery', originalIndex);
+                });
+            }
+        });
+    }
+    
+    // Button event listeners - attach immediately
+    galleryPrev.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        smoothScrollBy(-1);
+        return false;
+    });
+    
+    galleryNext.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        smoothScrollBy(1);
+        return false;
+    });
+    
+    // Also prevent any mousedown/mouseup events from bubbling
+    galleryPrev.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+    });
+    
+    galleryPrev.addEventListener('mouseup', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+    });
+    
+    galleryNext.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+    });
+    
+    galleryNext.addEventListener('mouseup', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+    });
+    
+    // Monitor scroll position and reset when needed
+    let scrollTimeout;
+    galleryScroll.addEventListener('scroll', () => {
+        if (isInitializing) return; // Don't interfere during initialization
+        
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            checkAndResetPosition();
+        }, 150);
+    });
+    
+    // Handle window resize
+    window.addEventListener('resize', debounce(() => {
+        if (initialized && !isInitializing) {
+            initialized = false;
+            createInfiniteScroll();
+        }
+    }, 250));
+    
+    // Initialize infinite scroll
+    createInfiniteScroll();
+}
+
+// Initialize gallery when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeGallery);
+} else {
+    initializeGallery();
 }
 
 // Intersection Observer for scroll animations
@@ -497,13 +667,4 @@ document.querySelectorAll('.featured-item').forEach((item, index) => {
     }
 });
 
-// Add click handlers to gallery images
-document.querySelectorAll('.gallery-item').forEach((item, index) => {
-    const image = item.querySelector('img');
-    
-    if (image) {
-        image.addEventListener('click', function() {
-            openImageModal(this.src, this.alt, 'gallery', index);
-        });
-    }
-}); 
+// Gallery click handlers are now managed within the infinite scroll function 

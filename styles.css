@@ -381,30 +381,56 @@ body {
 }
 
 .gallery-controls {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 2rem;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: none;
+    z-index: 100;
 }
 
 .gallery-btn {
-    width: 50px;
-    height: 50px;
-    border: 2px solid var(--primary-blue);
-    background: var(--white);
-    color: var(--primary-blue);
+    width: 60px;
+    height: 60px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
-    font-size: 1.5rem;
+    color: var(--white);
+    font-size: 1.8rem;
     cursor: pointer;
     transition: var(--transition-smooth);
     display: flex;
     align-items: center;
     justify-content: center;
+    pointer-events: auto;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    z-index: 101;
+    opacity: 0.8;
+    position: relative;
 }
 
 .gallery-btn:hover {
-    background: var(--primary-blue);
-    color: var(--white);
+    background: rgba(0, 0, 0, 0.9);
+    border-color: rgba(255, 255, 255, 0.6);
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.gallery-btn:active {
+    transform: scale(0.95);
+}
+
+.gallery-prev {
+    margin-left: -30px;
+}
+
+.gallery-next {
+    margin-right: -30px;
 }
 
 /* About Section */
@@ -848,6 +874,20 @@ body {
         flex: 0 0 320px;
     }
     
+    .gallery-btn {
+        width: 70px;
+        height: 70px;
+        font-size: 2rem;
+    }
+    
+    .gallery-prev {
+        margin-left: -35px;
+    }
+    
+    .gallery-next {
+        margin-right: -35px;
+    }
+    
     .about-content {
         grid-template-columns: 1fr 1fr;
         gap: 4rem;
@@ -898,6 +938,31 @@ body {
 
 /* Mobile Modal Styles */
 @media (max-width: 767px) {
+    /* Remove horizontal padding for gallery on mobile */
+    .gallery {
+        padding: 2rem 0;
+    }
+    
+    .gallery .container {
+        padding: 0;
+    }
+    
+    .gallery-scroll {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .gallery-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.4rem;
+    }
+    
+    .gallery-prev,
+    .gallery-next {
+        display: none;
+    }
+
     .modal-overlay {
         padding: 1rem;
     }
@@ -950,6 +1015,20 @@ body {
     
     .gallery-item {
         flex: 0 0 350px;
+    }
+    
+    .gallery-btn {
+        width: 80px;
+        height: 80px;
+        font-size: 2.2rem;
+    }
+    
+    .gallery-prev {
+        margin-left: -40px;
+    }
+    
+    .gallery-next {
+        margin-right: -40px;
     }
     
     .contact-info {
