@@ -258,48 +258,6 @@ document.querySelectorAll('img[loading="lazy"]').forEach(img => {
     imageObserver.observe(img);
 });
 
-// Smooth reveal animations for text elements
-function animateText() {
-    const textElements = document.querySelectorAll('.work-description, .about-description p');
-    
-    textElements.forEach(element => {
-        const text = element.textContent;
-        element.innerHTML = '';
-        
-        text.split(' ').forEach((word, index) => {
-            const span = document.createElement('span');
-            span.textContent = word + ' ';
-            span.style.opacity = '0';
-            span.style.transform = 'translateY(20px)';
-            span.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
-            element.appendChild(span);
-        });
-    });
-}
-
-// Trigger text animation when elements come into view
-const textObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const spans = entry.target.querySelectorAll('span');
-            spans.forEach(span => {
-                span.style.opacity = '1';
-                span.style.transform = 'translateY(0)';
-            });
-            textObserver.unobserve(entry.target);
-        }
-    });
-}, { threshold: 0.5 });
-
-// Initialize text animations after DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    animateText();
-    
-    document.querySelectorAll('.work-description, .about-description').forEach(element => {
-        textObserver.observe(element);
-    });
-});
-
 // Add mobile navigation styles
 const style = document.createElement('style');
 style.textContent = `
