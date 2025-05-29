@@ -635,7 +635,7 @@ body {
     background: var(--dark-text);
     color: var(--white);
     text-align: center;
-    padding: 2rem 1rem;
+    padding: 1rem;
 }
 
 /* Image Modal */
