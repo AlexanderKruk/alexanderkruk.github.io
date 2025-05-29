@@ -95,6 +95,26 @@ window.addEventListener('scroll', () => {
     }
 });
 
+// Hide/show scroll indicator based on scroll position
+function handleScrollIndicator() {
+    const heroScroll = document.querySelector('.hero-scroll');
+    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+    
+    if (heroScroll) {
+        if (scrollPosition > 50) {
+            // Hide when scrolling down
+            heroScroll.style.opacity = '0';
+            heroScroll.style.visibility = 'hidden';
+            heroScroll.style.transform = 'translateX(-50%) translateY(20px)';
+        } else {
+            // Show when at the top
+            heroScroll.style.opacity = '1';
+            heroScroll.style.visibility = 'visible';
+            heroScroll.style.transform = 'translateX(-50%) translateY(0)';
+        }
+    }
+}
+
 // Navbar background on scroll
 window.addEventListener('scroll', () => {
     const nav = document.querySelector('.nav');
@@ -105,6 +125,9 @@ window.addEventListener('scroll', () => {
         nav.style.background = 'rgba(248, 246, 240, 0.95)';
         nav.style.boxShadow = 'none';
     }
+    
+    // Handle scroll indicator visibility
+    handleScrollIndicator();
 });
 
 // Contact form handling
@@ -363,6 +386,9 @@ const debouncedScrollHandler = debounce(() => {
         nav.style.background = 'rgba(248, 246, 240, 0.95)';
         nav.style.boxShadow = 'none';
     }
+    
+    // Handle scroll indicator visibility
+    handleScrollIndicator();
 }, 10);
 
 window.addEventListener('scroll', debouncedScrollHandler); 
