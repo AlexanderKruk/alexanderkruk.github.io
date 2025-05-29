@@ -242,14 +242,6 @@ document.querySelectorAll('.view-details').forEach(button => {
     });
 });
 
-// Gallery item click interactions
-document.querySelectorAll('.gallery-item').forEach(item => {
-    item.addEventListener('click', function() {
-        const workTitle = this.querySelector('h4').textContent;
-        showNotification(`Viewing "${workTitle}"`, 'info');
-    });
-});
-
 // Lazy loading for images
 const imageObserver = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
@@ -391,4 +383,169 @@ const debouncedScrollHandler = debounce(() => {
     handleScrollIndicator();
 }, 10);
 
-window.addEventListener('scroll', debouncedScrollHandler); 
+window.addEventListener('scroll', debouncedScrollHandler);
+
+// Image Modal Functionality
+const imageModal = document.getElementById('imageModal');
+const modalImage = document.getElementById('modalImage');
+const modalClose = document.getElementById('modalClose');
+const modalPrev = document.getElementById('modalPrev');
+const modalNext = document.getElementById('modalNext');
+
+// Store image collections and current state
+let currentCollection = [];
+let currentIndex = 0;
+let currentSection = '';
+
+// Create image collections
+const featuredWorksImages = [];
+const galleryImages = [];
+
+// Populate featured works collection
+document.querySelectorAll('.featured-item').forEach((item, index) => {
+    const image = item.querySelector('.featured-image img');
+    if (image) {
+        featuredWorksImages.push({
+            src: image.src.replace(/w=\d+&h=\d+/, 'w=1200&h=1200'),
+            alt: image.alt,
+            index: index
+        });
+    }
+});
+
+// Populate gallery collection
+document.querySelectorAll('.gallery-item img').forEach((image, index) => {
+    galleryImages.push({
+        src: image.src.replace(/w=\d+&h=\d+/, 'w=1200&h=1200'),
+        alt: image.alt,
+        index: index
+    });
+});
+
+// Function to open modal with carousel
+function openImageModal(imageSrc, altText, section, index) {
+    currentSection = section;
+    currentIndex = index;
+    currentCollection = section === 'featured' ? featuredWorksImages : galleryImages;
+    
+    updateModalImage();
+    updateNavigationButtons();
+    
+    imageModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// Function to update modal image
+function updateModalImage() {
+    if (currentCollection[currentIndex]) {
+        modalImage.src = currentCollection[currentIndex].src;
+        modalImage.alt = currentCollection[currentIndex].alt;
+    }
+}
+
+// Function to update navigation buttons state
+function updateNavigationButtons() {
+    // Always enable buttons for infinite loop navigation
+    modalPrev.disabled = false;
+    modalNext.disabled = false;
+    
+    // Show/hide buttons based on collection size
+    if (currentCollection.length <= 1) {
+        modalPrev.style.display = 'none';
+        modalNext.style.display = 'none';
+    } else {
+        modalPrev.style.display = 'flex';
+        modalNext.style.display = 'flex';
+    }
+}
+
+// Function to navigate to previous image
+function goToPreviousImage() {
+    if (currentIndex > 0) {
+        currentIndex--;
+    } else {
+        // Loop to last image when at first image
+        currentIndex = currentCollection.length - 1;
+    }
+    updateModalImage();
+    updateNavigationButtons();
+}
+
+// Function to navigate to next image
+function goToNextImage() {
+    if (currentIndex < currentCollection.length - 1) {
+        currentIndex++;
+    } else {
+        // Loop to first image when at last image
+        currentIndex = 0;
+    }
+    updateModalImage();
+    updateNavigationButtons();
+}
+
+// Function to close modal
+function closeImageModal() {
+    imageModal.classList.remove('active');
+    document.body.style.overflow = '';
+    
+    setTimeout(() => {
+        modalImage.src = '';
+        modalImage.alt = '';
+        currentCollection = [];
+        currentIndex = 0;
+        currentSection = '';
+    }, 300);
+}
+
+// Event listeners
+modalClose.addEventListener('click', closeImageModal);
+modalPrev.addEventListener('click', goToPreviousImage);
+modalNext.addEventListener('click', goToNextImage);
+
+// Close modal when clicking outside the image
+imageModal.addEventListener('click', function(e) {
+    if (e.target === imageModal || e.target.classList.contains('modal-overlay')) {
+        closeImageModal();
+    }
+});
+
+// Keyboard navigation
+document.addEventListener('keydown', function(e) {
+    if (imageModal.classList.contains('active')) {
+        switch(e.key) {
+            case 'Escape':
+                closeImageModal();
+                break;
+            case 'ArrowLeft':
+                e.preventDefault();
+                goToPreviousImage();
+                break;
+            case 'ArrowRight':
+                e.preventDefault();
+                goToNextImage();
+                break;
+        }
+    }
+});
+
+// Add click handlers to featured works images
+document.querySelectorAll('.featured-item').forEach((item, index) => {
+    const image = item.querySelector('.featured-image img');
+    
+    if (image) {
+        image.addEventListener('click', function() {
+            openImageModal(this.src, this.alt, 'featured', index);
+        });
+    }
+});
+
+// Add click handlers to gallery images
+document.querySelectorAll('.gallery-item').forEach((item, index) => {
+    const image = item.querySelector('img');
+    
+    if (image) {
+        image.addEventListener('click', function() {
+            openImageModal(this.src, this.alt, 'gallery', index);
+        });
+    }
+}); 
