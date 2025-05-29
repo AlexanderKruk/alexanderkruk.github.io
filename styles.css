@@ -662,16 +662,16 @@ body {
 }
 
 .modal-close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 50px;
-    height: 50px;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
     background: rgba(0, 0, 0, 0.7);
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
     color: var(--white);
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -687,16 +687,17 @@ body {
 }
 
 .modal-nav {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 50px;
-    height: 50px;
+    position: fixed;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
     background: rgba(0, 0, 0, 0.7);
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
     color: var(--white);
-    font-size: 1.2rem;
+    font-size: 1rem;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -710,7 +711,7 @@ body {
     background: rgba(0, 0, 0, 0.9);
     border-color: rgba(255, 255, 255, 0.6);
     opacity: 1;
-    transform: translateY(-50%) scale(1.1);
+    transform: translateX(-50%) scale(1.1);
 }
 
 .modal-nav:disabled {
@@ -720,11 +721,11 @@ body {
 }
 
 .modal-prev {
-    left: 20px;
+    margin-left: -50px;
 }
 
 .modal-next {
-    right: 20px;
+    margin-left: 50px;
 }
 
 .modal-image {
@@ -910,25 +911,26 @@ body {
     
     /* Modal tablet styles */
     .modal-close {
-        top: 30px;
-        right: 30px;
+        top: 15px;
+        right: 15px;
         width: 60px;
         height: 60px;
         font-size: 1.8rem;
     }
     
     .modal-nav {
+        bottom: 30px;
         width: 60px;
         height: 60px;
         font-size: 1.4rem;
     }
     
     .modal-prev {
-        left: 30px;
+        margin-left: -70px;
     }
     
     .modal-next {
-        right: 30px;
+        margin-left: 70px;
     }
     
     .modal-image {
@@ -968,25 +970,30 @@ body {
     }
     
     .modal-close {
-        top: 15px;
-        right: 15px;
+        position: fixed;
+        top: 10px;
+        right: 10px;
         width: 40px;
         height: 40px;
         font-size: 1.2rem;
     }
     
     .modal-nav {
+        position: fixed;
+        bottom: 15px;
+        left: 50%;
+        transform: translateX(-50%);
         width: 40px;
         height: 40px;
         font-size: 1rem;
     }
     
     .modal-prev {
-        left: 15px;
+        margin-left: -50px;
     }
     
     .modal-next {
-        right: 15px;
+        margin-left: 50px;
     }
     
     .modal-image {
