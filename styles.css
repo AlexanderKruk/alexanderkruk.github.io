@@ -22,7 +22,7 @@
     --font-body: 'Inter', sans-serif;
     
     /* Spacing */
-    --section-padding: 4rem 1rem;
+    --section-padding: 2rem 1rem;
     --container-max-width: 1200px;
     
     /* Transitions */
@@ -685,7 +685,7 @@ body {
 /* Tablet Styles */
 @media (min-width: 768px) {
     :root {
-        --section-padding: 6rem 2rem;
+        --section-padding: 2rem 2rem;
     }
     
     .nav-menu {
